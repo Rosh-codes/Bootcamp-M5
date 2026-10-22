@@ -33,28 +33,50 @@ class AnimalReportWriterTest {
     @Test
     @DisplayName("writes report file that contains total count")
     void shouldWriteTotalCount() throws IOException {
-        // TODO: Create a list of 3 animals
-        // TODO: Create a temp file: Path output = Files.createTempFile("report-test", ".txt");
-        // TODO: Call writer.writeReport(animals, output)
-        // TODO: Read the file content: String content = Files.readString(output, StandardCharsets.UTF_8);
-        // TODO: Assert content contains "Total animals: 3"
-        // TODO: Clean up: Files.deleteIfExists(output)
+        List<Animal> animals = List.of(
+                new Animal("Buddy", "Dog", 3, true, LocalDate.now()),
+                new Animal("Luna", "Cat", 2, false, LocalDate.now()),
+                new Animal("Max", "Dog", 5, true, LocalDate.now()));
+        Path output = Files.createTempFile("report-test", ".txt");
+        try {
+            writer.writeReport(animals, output);
+            String content = Files.readString(output, StandardCharsets.UTF_8);
+            assertThat(content).contains("Total animals: 3");
+        } finally {
+            Files.deleteIfExists(output);
+        }
     }
 
     @Test
     @DisplayName("writes per-species breakdown in alphabetical order")
     void shouldWriteSpeciesBreakdown() throws IOException {
-        // TODO: Create animals of different species (Dog, Cat)
-        // TODO: Write report to temp file
-        // TODO: Read content and verify "Cat:" appears before "Dog:" (alphabetical)
-        // TODO: Verify vaccinated counts are correct
+        List<Animal> animals = List.of(
+                new Animal("Buddy", "Dog", 3, true, LocalDate.now()),
+                new Animal("Luna", "Cat", 2, false, LocalDate.now()));
+        Path output = Files.createTempFile("report-species", ".txt");
+        try {
+            writer.writeReport(animals, output);
+            String content = Files.readString(output, StandardCharsets.UTF_8);
+            assertThat(content.indexOf("Cat:")).isLessThan(content.indexOf("Dog:"));
+            assertThat(content).contains("Cat: 1 total, 0 vaccinated", "Dog: 1 total, 1 vaccinated");
+        } finally {
+            Files.deleteIfExists(output);
+        }
     }
 
     @Test
     @DisplayName("writes oldest animal per species")
     void shouldWriteOldestPerSpecies() throws IOException {
-        // TODO: Create animals where Max (age 5) is the oldest Dog
-        // TODO: Write report to temp file
-        // TODO: Read content and verify it contains "Dog: Max (age 5)"
+        List<Animal> animals = List.of(
+                new Animal("Buddy", "Dog", 3, true, LocalDate.now()),
+                new Animal("Max", "Dog", 5, false, LocalDate.now()));
+        Path output = Files.createTempFile("report-oldest", ".txt");
+        try {
+            writer.writeReport(animals, output);
+            String content = Files.readString(output, StandardCharsets.UTF_8);
+            assertThat(content).contains("Dog: Max (age 5)");
+        } finally {
+            Files.deleteIfExists(output);
+        }
     }
 }

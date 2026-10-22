@@ -1,0 +1,8 @@
+Coverage reflection
+
+The tests cover the requested cases in tasks 1–7. Two branches that would still be untested are:
+
+1. AnimalCsvParser.parseFile when the file is completely empty. This takes the `header == null` path. A test for it would catch a regression where an empty file is not handled as an empty result.
+2. AnimalSorter.sortByName when its input is null. The null-input behavior is tested for sortByAge, but not for each sorting method. A test would catch a regression where this method throws instead of returning an empty list.
+
+Both are worth testing because they are simple input cases callers may encounter.
